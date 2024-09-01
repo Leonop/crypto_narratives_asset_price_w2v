@@ -1,0 +1,10 @@
+.vscode/settings.json
+.DS_Store
+__pycache__/
+data/processed/
+models/
+outputs/
+data/
+stanford-corenlp-full-2018-10-05/
+word2vec_kai/
+*.props
