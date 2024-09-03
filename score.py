@@ -99,7 +99,7 @@ def load_doc_level_corpus():
     return corpus, doc_ids, N_doc
 
 
-def score_tf(documents, doc_ids, expanded_dict):
+def score_tf(documents, doc_ids, expanded_dict, **kwargs):
     """
     Score documents using term freq. 
     """
@@ -111,7 +111,7 @@ def score_tf(documents, doc_ids, expanded_dict):
         n_core=global_options.N_CORES,
     )
     score.to_csv(
-        Path(global_options.OUTPUT_FOLDER, "scores", "scores_TF.csv"), index=False
+        Path(global_options.OUTPUT_FOLDER, "scores", "TF", f"scores_TF_{kwargs['topic_name']}.csv"), index=False
     )
 
 
@@ -130,7 +130,7 @@ def score_tf_idf(documents, doc_ids, N_doc, method, expanded_dict, **kwargs):
     """
     if method == "TF":
         print("Scoring TF.")
-        score_tf(documents, doc_ids, expanded_dict)
+        score_tf(documents, doc_ids, expanded_dict, **kwargs)
     else:
         print("Scoring TF-IDF.")
         # load document freq
@@ -147,13 +147,17 @@ def score_tf_idf(documents, doc_ids, N_doc, method, expanded_dict, **kwargs):
             method=method,
             **kwargs
         )
+        # if the folder "{method}" does not exist, create it
+        if not os.path.exists(str(Path(global_options.OUTPUT_FOLDER, "scores", f"{method}"))):
+            os.makedirs(str(Path(global_options.OUTPUT_FOLDER, "scores", f"{method}")))
         # save the document level scores (without dividing by doc length)
         score.to_csv(
             str(
                 Path(
                     global_options.OUTPUT_FOLDER,
                     "scores",
-                    "scores_{}.csv".format(method),
+                    f"{method}",
+                    f"scores_{method}_{kwargs['topic_name']}.csv",
                 )
             ),
             index=False,
@@ -164,43 +168,45 @@ def score_tf_idf(documents, doc_ids, N_doc, method, expanded_dict, **kwargs):
                 global_options.OUTPUT_FOLDER,
                 "scores",
                 "word_contributions",
-                "word_contribution_{}.csv".format(method),
+                f"word_contribution_{method}_{kwargs['topic_name']}.csv",
             )
         )
 
 
 if __name__ == "__main__":
-    current_dict_path = str(
-        str(Path(global_options.OUTPUT_FOLDER, "dict", "expanded_dict.csv"))
-    )
-    culture_dict, all_dict_words = culture_dictionary.read_dict_from_csv(
-        current_dict_path
-    )
-    # words weighted by similarity rank (optional)
-    word_sim_weights = culture_dictionary.compute_word_sim_weights(current_dict_path)
-
-    ## Pre-score ===========================
-    # aggregate processed sentences to documents
-    corpus, doc_ids, N_doc = construct_doc_level_corpus(
-        sent_corpus_file=Path(
-            global_options.DATA_FOLDER, "processed", "trigram", "documents.txt"
-        ),
-        sent_id_file=Path(
-            global_options.DATA_FOLDER, "processed", "parsed", "document_sent_ids.txt"
-        ),
-    )
-    word_doc_freq = calculate_df(corpus)
-
-    ## Score ========================
-    # create document scores
-    methods = ["TF", "TFIDF", "WFIDF"]
-    for method in methods:
-        score_tf_idf(
-            corpus,
-            doc_ids,
-            N_doc,
-            method=method,
-            expanded_dict=culture_dict,
-            normalize=False,
-            word_weights=word_sim_weights,
+    for k, v in tqdm(dict(global_options.SEED_WORDS).items()):
+        current_dict_path = str(
+            str(Path(global_options.OUTPUT_FOLDER, "dict", f"expanded_dict_{k}.csv"))
         )
+        culture_dict, all_dict_words = culture_dictionary.read_dict_from_csv(
+            current_dict_path
+        )
+        # words weighted by similarity rank (optional)
+        word_sim_weights = culture_dictionary.compute_word_sim_weights(current_dict_path)
+
+        ## Pre-score ===========================
+        # aggregate processed sentences to documents
+        corpus, doc_ids, N_doc = construct_doc_level_corpus(
+            sent_corpus_file=Path(
+                global_options.DATA_FOLDER, "processed", "trigram", "documents.txt"
+            ),
+            sent_id_file=Path(
+                global_options.DATA_FOLDER, "processed", "parsed", "document_sent_ids.txt"
+            ),
+        )
+        word_doc_freq = calculate_df(corpus)
+
+        ## Score ========================
+        # create document scores
+        methods = ["TF","TFIDF", "WFIDF"]
+        for method in methods:
+            score_tf_idf(
+                corpus,
+                doc_ids,
+                N_doc,
+                method=method,
+                expanded_dict=culture_dict,
+                normalize=False,
+                word_weights=word_sim_weights,
+                topic_name=k
+            )

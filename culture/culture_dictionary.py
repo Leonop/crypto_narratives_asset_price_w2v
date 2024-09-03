@@ -97,7 +97,6 @@ def rank_by_sim(expanded_words, seed_words, model) -> "dict[str: list]":
         expanded_words_sorted[dimension] = sorted_similarity_list
     return expanded_words_sorted
 
-
 def write_dict_to_csv(culture_dict, file_name):
     """write the expanded dictionary to a csv file, each dimension is a column, the header includes dimension names
     
@@ -248,6 +247,7 @@ def score_tf_idf(
     method="TFIDF",
     word_weights=None,
     normalize=False,
+    topic_name=None,
 ):
     """Calculate tf-idf score for documents
 

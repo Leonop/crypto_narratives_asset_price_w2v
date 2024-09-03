@@ -59,13 +59,26 @@ You can config global options in the `global_options.py`. The most important opt
     
     (Optional): It is possible to manually remove or add items to the `expanded_dict.csv` before scoring the documents. 
 
-4. Use `python score.py` to score the documents. Note that the output scores for the documents are not adjusted by the document length. The program outputs three sets of scores: 
-    - `outputs/scores/scores_TF_{topic}.csv`: using raw term counts or term frequency (TF),
-    - `outputs/scores/scores_TFIDF_{topic}.csv`: using TF-IDF weights, 
-    - `outputs/scores/scores_WFIDF_{topic}.csv`: TF-IDF with Log normalization (WFIDF). 
+4. Use `clean_expanded_dict.py` to clean the expanded dictionary. The program outputs the following files:
+    - `outputs/dict/expanded_dict_{topic_name}.csv`: A csv file with the number of CSV files. The number of files equal to the number of dimensions in the dictionary (14 in the paper). The row headers are the dimension names. 
 
+    (Optional): It is possible to manually remove or add items to the `expanded_dict.csv` before scoring the documents.
+
+5. Use `python score.py` to score the documents. Note that the output scores for the documents are not adjusted by the document length. The program outputs three sets of scores: 
+    - `outputs/scores/TF/scores_TF_{topic}.csv`: using raw term counts or term frequency (TF),
+    - `outputs/scores/TFIDF/scores_TFIDF_{topic}.csv`: using TF-IDF weights, 
+    - `outputs/scores/WFIDF_scores_WFIDF_{topic}.csv`: TF-IDF with Log normalization (WFIDF). 
+    if the folder `TF' does not exist, the program will create it.
     (Optional): It is possible to use additional weights on the words (see `score.score_tf_idf()` for detail).  
 
-5. (Optional): Use `python aggregate_firms.py` to aggregate the scores to the firm-time level. The final scores are adjusted by the document lengths. 
+<!-- 6. (Optional): Use `python aggregate_firms.py` to aggregate the scores to the firm-time level. The final scores are adjusted by the document lengths.  -->
+
 
 6. Use `python aggregate_daily.py` to aggregate the reddit post level scores to daily level.
+
+    - `outputs/scores/TF/bitcoin_scores_TF.csv`: This file contains the scores for each daily aggregation of reddit posts related to bitcoin, calculated using raw term counts or term frequency (TF).
+
+    - `outputs/scores/TFIDF/bitcoin_scores_TFIDF.csv`: This file contains the scores for each daily aggregation of reddit posts related to bitcoin, calculated using TF-IDF weights.
+
+    - `outputs/scores/WFIDF/bitcoin_scores_WFIDF.csv`: This file contains the scores for each daily aggregation of reddit posts related to bitcoin, calculated using TF-IDF with Log normalization (WFIDF).
+
