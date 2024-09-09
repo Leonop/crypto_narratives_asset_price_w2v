@@ -48,9 +48,10 @@ def clean_dict(expanded_words) -> "dict[str: list]":
 
     # Clean the expanded words dictionary
     expanded_words_cleaned = {}
+    expanded_words_cleaned = {}
     for key, words in expanded_words.items():
-        cleaned_words = [clean_word(word) for word in words if len(word) >= 2]
-        expanded_words_cleaned[key] = cleaned_words
+        cleaned_words = [clean_word(word.replace('\\', '')) for word in words if len(word) >= 3 and not re.match(r'\d+k$', word)]
+        expanded_words_cleaned[key] = [word for word in cleaned_words if word != '']
     return expanded_words_cleaned
 
 def write_dict_to_csv(_dict, file_name):

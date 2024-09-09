@@ -29,7 +29,7 @@ W2V_DIM: int = 300  # dimension of word2vec vectors
 W2V_WINDOW: int = 5  # window size in word2vec
 W2V_ITER: int = 20  # number of iterations in word2vec
 N_WORDS_DIM: int = 500  # max number of words in each dimension of the dictionary
-DICT_RESTRICT_VOCAB = None # change to a fraction number (e.g. 0.2) to restrict the dictionary vocab in the top 20% of most frequent vocab
+DICT_RESTRICT_VOCAB = 0.2 # change to a fraction number (e.g. 0.2) to restrict the dictionary vocab in the top 20% of most frequent vocab
 
 # Inputs for constructing the expanded dictionary
 DIMS: List[str] = ["bubble", "scam", "intrinsic_value", "inflation", "volatility", "regulation", "fear_of_missing_out", "fear_of_loss" "blockchain_technology", "security", "environment", "trading_strategy", "liquidity"]

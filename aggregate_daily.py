@@ -40,7 +40,7 @@ def save_scores(scores, method, topic_name):
             Path(
                 global_options.OUTPUT_FOLDER,
                 "scores",
-                f"firm_scores_{method}_{topic_name}.csv",
+                f"bitcoin_scores_{method}_{topic_name}.csv",
             )
         ),
         index=False,
@@ -58,6 +58,7 @@ if __name__ == "__main__":
                 agg_scores = daily_scores
             else:
                 # combine the scores generated aggregate_daily to one dataframe, keep the common columns, and add the new columns
-                agg_scores = agg_scores.merge(daily_scores, on=['datetime','document_length'], how="left")
+                agg_scores = agg_scores.merge(daily_scores, on=['datetime','document_length'], how="left", suffixes=("", f"_{method}"))
         save_scores(agg_scores, method, "all")
+        agg_scores = pd.DataFrame()
 
