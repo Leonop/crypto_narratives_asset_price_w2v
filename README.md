@@ -82,3 +82,8 @@ You can config global options in the `global_options.py`. The most important opt
 
     - `outputs/scores/WFIDF/bitcoin_scores_WFIDF.csv`: This file contains the scores for each daily aggregation of reddit posts related to bitcoin, calculated using TF-IDF with Log normalization (WFIDF).
 
+
+7. Use `reddit_attention_sentiment.py' to obtain the daily attention and sentiment index of social media investors on reddits' subbreddit platform r/bitcoin. The program outputs the following files:
+
+    - `src/reddit_data/bitcoin_attention_sentiment.csv`: This file contains the daily attention index of social media investors on reddits' subbreddit platform r/bitcoin.
+
