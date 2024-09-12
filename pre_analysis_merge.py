@@ -55,14 +55,30 @@ def merge_all_3methods_df():
             df_bitcoin = pd.merge(df_bitcoin, temp, on=['datetime', 'yyww', 'document_length'], how='left', suffixes=('', f"_{method}"))
     return df_bitcoin
 
+def load_sentimen_attention_data():
+    # read the data from the csv file in the reddit_data folder
+    bitcoin_posts = pd.read_csv(os.path.join(data_folder, "bitcoin_attention_sentiment.csv"))
+    # global variable for Loughran McDonald's sentiment dictionary
+    bitcoin_posts['post_date'] = pd.to_datetime(bitcoin_posts['post_date'])
+    bitcoin_posts['yyww'] = bitcoin_posts['post_date'].apply(datetime_to_yearweek)
+    return bitcoin_posts
+
 def agg_weekly_w2v_scores(df_daily):
     # Aggregate the daily scores to weekly scores
-    # drop column datetime
+    # load the daily scores
     df_daily.drop(columns=['datetime'], inplace=True)
+    # aggregate the daily scores to weekly scores
     df_weekly = df_daily.groupby('yyww').mean().reset_index()
     return df_weekly
 
-
+def agg_weekly_scores():
+    # Aggregate the daily scores to weekly scores
+    # drop column datetime
+    df_daily = load_sentimen_attention_data()
+    df_daily.drop(columns=['post_date'], inplace=True)
+    df_weekly = df_daily.groupby('yyww').mean().reset_index()
+    print(df_weekly.head())
+    return df_weekly
 
 def compute_average_tone(df, date_col, bubble_col, tone_col):
     # Ensure the date_col is in the DataFrame
@@ -297,3 +313,13 @@ if __name__ == "__main__":
 
     # save the final dataframe to a csv file
     df_bitret_LTM3factors.to_csv(str(Path(current_folder,"outputs", "weekly_posts_narrative_tone_ltm3.csv")), index=False)
+
+
+    # get the weekly attention and sentiment data
+    attention_sentiment_weekly = agg_weekly_scores()
+
+    # merge the weekly attention and sentiment data with the final dataframe
+    df_bitret_LTM3factors = pd.merge(df_bitret_LTM3factors, attention_sentiment_weekly, on='yyww', how='left')
+
+    # save the final dataframe to a csv file
+    df_bitret_LTM3factors.to_csv(str(Path(current_folder,"outputs", "weekly_posts_narrative_tone_ltm3_attention_sentiment.csv")), index=False)
