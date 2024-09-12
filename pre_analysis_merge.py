@@ -3,13 +3,14 @@
 # load libraries
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 import re
 import os
 import global_options
 from pathlib import Path
 from datetime import datetime
+import openpyxl
 
 def datetime_to_yearweek(date):
     # Get the ISO calendar week number
@@ -21,10 +22,12 @@ def datetime_to_yearweek(date):
 # the the path of this file
 # this file is in the folder "scripts"
 # the root folder is the parent folder of "scripts"
-current_folder = Path(__file__).parent
+current_folder = Path(__file__).parent.resolve()
 root_folder = current_folder.parent.parent
 data_folder = str(Path(root_folder, "reddit_data"))
-print(current_folder)
+# print(f"Current folder: {current_folder}")
+# print(f"Root folder: {root_folder}")
+# print(f"Data folder: {data_folder}")
 
 # move the column 'yyww' to the certain column
 def move_column(df, column_name, position):
@@ -57,6 +60,7 @@ def merge_all_3methods_df():
 
 def load_sentimen_attention_data():
     # read the data from the csv file in the reddit_data folder
+    # print(os.path.join(data_folder, "bitcoin_attention_sentiment.csv"))
     bitcoin_posts = pd.read_csv(os.path.join(data_folder, "bitcoin_attention_sentiment.csv"))
     # global variable for Loughran McDonald's sentiment dictionary
     bitcoin_posts['post_date'] = pd.to_datetime(bitcoin_posts['post_date'])
@@ -77,7 +81,7 @@ def agg_weekly_scores():
     df_daily = load_sentimen_attention_data()
     df_daily.drop(columns=['post_date'], inplace=True)
     df_weekly = df_daily.groupby('yyww').mean().reset_index()
-    print(df_weekly.head())
+    # print(df_weekly.head())
     return df_weekly
 
 def compute_average_tone(df, date_col, bubble_col, tone_col):
@@ -187,6 +191,7 @@ def compute_weighted_average_tone(df, date_col, bubble_col, tone_col, upvote_col
 
 
 def weekly_up_down_weighted_post(df, date_col, interval='W'):
+    # Construct the full file path
     filename = "GPT_labeled_sample_5000_format_cleaned_20240608.csv"
     filepath = data_folder
     df = pd.read_csv(os.path.join(filepath, filename))
@@ -267,6 +272,7 @@ def bitcoin_ret_interval(interval='W'):
 if __name__ == "__main__":
     filename = "GPT_labeled_sample_5000_format_cleaned_20240608.csv"
     filepath = data_folder
+    # print(os.path.join(filepath, filename))
     df = pd.read_csv(os.path.join(filepath, filename))
     weekly_posts = weekly_post(df, 'created_date', 'W')
     weekly_posts.rename(columns = {'week':'yyww'}, inplace = True)
@@ -312,7 +318,7 @@ if __name__ == "__main__":
     df_bitret_LTM3factors.head()
 
     # save the final dataframe to a csv file
-    df_bitret_LTM3factors.to_csv(str(Path(current_folder,"outputs", "weekly_posts_narrative_tone_ltm3.csv")), index=False)
+    # df_bitret_LTM3factors.to_csv(str(Path(current_folder,"outputs", "weekly_posts_narrative_tone_ltm3.csv")), index=False)
 
 
     # get the weekly attention and sentiment data
