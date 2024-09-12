@@ -91,3 +91,20 @@ You can config global options in the `global_options.py`. The most important opt
 8. Use `pre_analysis_merge.py' to aggregate the daily files to weekly files, including the daily narratives, attention of retail investors (number of posts on subreddit r/bitcoin), and sentiment of retail investors (sentiment of posts on subreddit r/bitcoin). The program outputs the following files:
 
     - `src/kai../output/weekly_posts_narrative_tone_ltm3_attention_sentiment.csv`: This file contains the weekly narratives, attention of retail investors (number of posts on subreddit r/bitcoin), and sentiment of retail investors (sentiment of posts on subreddit r/bitcoin).
+
+
+9. Use `data_visualization.py' to plot the pattern of bitcoin return with ltm 3factors, narratives, attention and sentiment of retail investors. The program outputs the following files:
+
+    - the graph has been saved as pdf in folder `Crypto/output/figure/{}.pdf'.format('bitcoin_return_ltm3factors_narrative_attention_sentiment')`
+    to run this program, you need to cd another virualenv with the following packages:
+    - `pandas`
+    - `matplotlib`
+    - `numpy`
+    - `seaborn`
+    - `datetime`
+    It's relatively hard to run in python 3.8.10. So I use cd /mnt/e/Github_projects/virtualenvs/_nlp_tpm and run the program in python 3.10.12.
+    first open another terminal and run the following command:
+    1. cd /mnt/e/Github_projects/virtualenvs/_nlp_tpm
+    2. .\activate
+    3. python path_to_file/data_visualization.py
+    It saves four figures in the folder `Crypto/output/figure/`
