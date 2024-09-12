@@ -87,3 +87,7 @@ You can config global options in the `global_options.py`. The most important opt
 
     - `src/reddit_data/bitcoin_attention_sentiment.csv`: This file contains the daily attention index of social media investors on reddits' subbreddit platform r/bitcoin.
 
+
+8. Use `pre_analysis_merge.py' to aggregate the daily files to weekly files, including the daily narratives, attention of retail investors (number of posts on subreddit r/bitcoin), and sentiment of retail investors (sentiment of posts on subreddit r/bitcoin). The program outputs the following files:
+
+    - `src/kai../output/weekly_posts_narrative_tone_ltm3_attention_sentiment.csv`: This file contains the weekly narratives, attention of retail investors (number of posts on subreddit r/bitcoin), and sentiment of retail investors (sentiment of posts on subreddit r/bitcoin).
